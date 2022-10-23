@@ -20,10 +20,13 @@ void Player::DrawEntity() {
 	AnimationUpdate();
 
 	Novice::DrawLine(position.x, ToWorld(position.y), prePosition.x, ToWorld(prePosition.y), 0xFF0000FF);
-
-	DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, color);
-	DrawQuadFunction(prePosition, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, (color & 0xFFFFFF00) + (color & 0xFF) / 2);
-
+	if (nowPolar.theta != prePolar.theta) {
+		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar((PolarToVector2(nowPolar)-PolarToVector2(prePolar)) * -1).theta, color);
+		DrawQuadFunction(prePosition, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar((PolarToVector2(nowPolar) - PolarToVector2(prePolar)) * -1).theta, (color & 0xFFFFFF00) + (color & 0xFF) / 2);
+	}
+	else {
+		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, nowPolar.theta + Degree2Radian(90) * reverse, color);
+	}
 }
 
 
@@ -48,11 +51,13 @@ void Player::EntityUpdate() {
 
 			if (velocity.Length() != 0) {
 				reverse *= -1;
-				BulletShooting();
+				//BulletShooting();
 			}
 
 			velocity = ZeroVector2;
 			nowPolar = Vector2ToPolar(position - MapCentor);
+			nowPolar.radius = MapRadius;
+			prePolar = nowPolar;
 			prePosition = MapCentor + PolarToVector2(prePolar);
 		}
 	}

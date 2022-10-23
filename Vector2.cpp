@@ -11,6 +11,10 @@ void Vector2::Reset() {
 	*this = ZeroVector2;
 }
 
+Vector2 Vector2::Rotate(const float &theta) const {
+	return *this * MakeRotateMatrix(theta);
+}
+
 float Vector2::Length() const {
 	return sqrt(pow(x, 2) + pow(y, 2));
 }

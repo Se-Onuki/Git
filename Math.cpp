@@ -52,3 +52,8 @@ PolarCoordinates Vector2ToPolar(Vector2 Vector) {
 		return { 0,0 };
 	}
 }
+
+
+Matrix2x2 MakeRotateMatrix(const float &theta) {
+	return Matrix2x2(cos(theta), sin(theta), -sin(theta), cos(theta));
+}

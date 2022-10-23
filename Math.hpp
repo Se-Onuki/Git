@@ -77,3 +77,12 @@ Vector2 PolarToVector2(PolarCoordinates Polar);
 /// <param name="Vector">ベクトル</param>
 /// <returns>極座標クラス</returns>
 PolarCoordinates Vector2ToPolar(Vector2 Vector);
+
+
+/// <summary>
+/// 回転行列作成関数
+/// </summary>
+/// <param name="VectorA">ベクトルA</param>
+/// <param name="VectorB">ベクトルB</param>
+/// <returns>内積計算の結果</returns>
+Matrix2x2 MakeRotateMatrix(const float &theta);

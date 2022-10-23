@@ -6,6 +6,9 @@ static unsigned int TestWhiteTexture;
 static unsigned int TestCircleTexture;
 static unsigned int TestUVTexture;
 
+
+static int PlayerGuide;
+
 static int TextureFlame = 0;
 
 /// <summary>
@@ -43,6 +46,8 @@ static void ImportTexture() {
 	TestWhiteTexture = Novice::LoadTexture("white1x1.png");
 	TestCircleTexture = Novice::LoadTexture("./Resources/Texture/TestTexture/Circle.png");
 	TestUVTexture = Novice::LoadTexture("uvChecker.png");
+
+	PlayerGuide = Novice::LoadTexture("./Resources/Texture/Entity/Enemy/Arrow.png");
 }
 
 inline void TextureUpdate() {

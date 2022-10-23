@@ -47,16 +47,16 @@ static unsigned int playerCount = 2;
 
 inline void Player::EntityMoveInput() {
     if (isKeyPress(DIK_SPACE)) {
-        if (isKeyPress(DIK_BACKSPACE) && velocity.Length() == 0) {
+        if (/*isKeyPress(DIK_BACKSPACE) &&*/ velocity.Length() == 0) {
             isInput = true;
             prePolar.theta += Degree2Radian(3 * reverse);
             prePosition = MapCentor + PolarToVector2(prePolar);
         }
-        else if (!isKeyPress(DIK_BACKSPACE)) {
+ /*       else if (!isKeyPress(DIK_BACKSPACE)) {
             isInput = true;
             prePolar.theta += Degree2Radian(3 * reverse);
             prePosition = MapCentor + PolarToVector2(prePolar);
-        }
+        }*/
 
 
     }
@@ -85,10 +85,12 @@ inline void Player::EntityMoveInput() {
 
 
 inline void Player::EnemyHit() {
-    for (int i = 0; i < EnemyMax; i++) {
-        if (enemy[i].isAlive) {
-            if (BallCollision(position, radius, enemy[i].position, enemy[i].radius)) {
-                enemy[i].Reset();
+    if (velocity.Length() != 0) {
+        for (int i = 0; i < EnemyMax; i++) {
+            if (enemy[i].isAlive) {
+                if (BallCollision(position, radius, enemy[i].position, enemy[i].radius)) {
+                    enemy[i].Reset();
+                }
             }
         }
     }

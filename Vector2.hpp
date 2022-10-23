@@ -13,6 +13,8 @@ public:
 
 	void Vector2Printf(int x, int y) const;
 
+	Vector2 Rotate(const float &theta) const;
+
 	void Reset();
 
 	float Length() const;
