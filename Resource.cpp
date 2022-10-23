@@ -7,6 +7,7 @@
 #include "BaseData.hpp"
 #include "Math.hpp"
 #include "Vector2.hpp"
+#include "Matrix2x2.hpp"
 
 #include "Camera.hpp"
 
@@ -22,9 +23,9 @@ void DrawQuadFunction(Vector2 centor, Vector2 size, int srcX, int srcY, int srcW
 };
 
 void DrawQuadFunction(Vector2 centor, Vector2 size, int srcX, int srcY, int srcW, int srcH, unsigned int textureHandle, float angle, unsigned int color) {
-	Vector2 LeftTop = RotateVector2((size * 0.5), Degree2Radian( + 0) + angle);
-	Vector2 LeftDown = RotateVector2((size * 0.5), Degree2Radian( + 90) + angle);
-	Vector2 RightTop = RotateVector2((size * 0.5), Degree2Radian( + 270) + angle);
-	Vector2 RightDown = RotateVector2((size * 0.5), Degree2Radian( + 180) + angle);
+	Vector2 LeftTop = Vector2{ -size.x / 2, size.y / 2 }.Rotate(angle);
+	Vector2 LeftDown = Vector2{ size.x / 2, size.y / 2 }.Rotate(angle);
+	Vector2 RightTop = Vector2{ -size.x / 2, -size.y / 2 }.Rotate(angle);
+	Vector2 RightDown = Vector2{ size.x / 2, -size.y / 2 }.Rotate(angle);
 	Novice::DrawQuad((centor.x - Camera::scroll.x) + LeftTop.x, ToWorld((centor.y - Camera::scroll.y) + LeftTop.y), (centor.x - Camera::scroll.x) + RightTop.x, ToWorld((centor.y - Camera::scroll.y) + RightTop.y), (centor.x - Camera::scroll.x) + LeftDown.x, ToWorld((centor.y - Camera::scroll.y) + LeftDown.y), (centor.x - Camera::scroll.x) + RightDown.x, ToWorld((centor.y - Camera::scroll.y) + RightDown.y), srcX, srcY, srcW, srcH, textureHandle, color);
 };

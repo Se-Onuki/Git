@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "SpriteClass.hpp"
+#include "Math.hpp"
 #include "Vector2.hpp"
 
 void Line::DrawLine() {
@@ -181,9 +182,13 @@ Vector2 Nomalize(Vector2 OriginalVector2) {
 float Ellipse2LineLength(Vector2 Ellipse, Vector2 start, Vector2 end) {
 	Vector2 NormLine = ZeroVector2;
 	float length = Length((start), (end));
+	/*
 	NormLine.x = ((end.x) - (start.x)) / length;
 	NormLine.y = ((end.y) - (start.y)) / length;
 	float dot = DotProduct((start), (Ellipse), (start), (end), false, true);
+	*/
+	NormLine = (end - start).Nomalize();
+	float dot = DotProduct((Ellipse - start), NormLine);
 
 	if (dot < 0) {
 		return Length((start), (Ellipse));
@@ -192,7 +197,10 @@ float Ellipse2LineLength(Vector2 Ellipse, Vector2 start, Vector2 end) {
 		return Length((end), (Ellipse));
 	}
 	else {
-		return Length({ (NormLine.x * dot), (NormLine.y * dot) }, (Ellipse));
+//		return Length({ (NormLine.x * dot), (NormLine.y * dot) }, (Ellipse));
+		//	return Length({ (NormLine.x * dot), (NormLine.y * dot) }, (Ellipse));
+		//	return Length(NormLine * dot, Ellipse);
+		return Length(start + (NormLine)*dot, Ellipse);
 	}
 	return 0;
 };

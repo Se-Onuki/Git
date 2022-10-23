@@ -18,7 +18,7 @@ Entity::Entity() : prePosition(ZeroVector2), facing(ZeroVector2), speed(0.0f), i
 void Entity::DrawEntity() {
 	if (isAlive) {
 		AnimationUpdate();
-		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar(velocity).theta, color);
+		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar(velocity * -1).theta, color);
 		//	Novice::DrawEllipse(position.x, ToWorld(position.y), radius, radius, 0.0f, RED, kFillModeWireFrame);
 	}
 }
