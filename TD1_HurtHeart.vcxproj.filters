@@ -25,9 +25,6 @@
     <Filter Include="BaseDate\Math\Vector2">
       <UniqueIdentifier>{d5da87cd-f806-4c1e-8d71-58be150c76ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SpriteClass">
-      <UniqueIdentifier>{e12be6a2-5746-4b12-8660-0730bb4e0938}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Map">
       <UniqueIdentifier>{e6c7a177-5374-4cc6-b359-cee5e5b3a5dc}</UniqueIdentifier>
     </Filter>
@@ -64,6 +61,21 @@
     </Filter>
     <Filter Include="Entity\Boss">
       <UniqueIdentifier>{f7b5ecda-4c20-44b8-a3d4-99ef7aff2eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Number">
+      <UniqueIdentifier>{ed2ccd27-02f4-45d2-9b10-b34fa56cf6ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BaseDate\Scene">
+      <UniqueIdentifier>{a332bf68-cbc1-4a66-a43e-71b2937d28e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SpriteClass">
+      <UniqueIdentifier>{e12be6a2-5746-4b12-8660-0730bb4e0938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{acc95744-aa42-4292-beda-8123aff856d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Fade">
+      <UniqueIdentifier>{f616dde8-0551-4a1e-a72f-722aed032e03}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +145,18 @@
     </ClCompile>
     <ClCompile Include="Boss.cpp">
       <Filter>Entity\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Number.cpp">
+      <Filter>Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>BaseDate\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>Resource\Fade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +288,18 @@
     </ClInclude>
     <ClInclude Include="Boss.hpp">
       <Filter>Entity\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Number.hpp">
+      <Filter>Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>BaseDate\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.hpp">
+      <Filter>Resource\Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

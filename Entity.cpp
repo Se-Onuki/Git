@@ -30,11 +30,10 @@ void Entity::EntityMoveUpdate() {
 	if (isAlive) {
 		prePosition = position;
 
-		norm = Length(ZeroVector2, velocity);
+	//	norm = Length(ZeroVector2, velocity);
 
-		if (norm != 0) {
-			velocity.x = velocity.x / norm * speed;
-			velocity.y = velocity.y / norm * speed;
+		if (velocity.Length() != 0) {
+			velocity = velocity.Nomalize() * speed;
 			facing = velocity;
 			facing.x = Clamp(facing.x, -1, 1);
 			facing.y = Clamp(facing.y, -1, 1);

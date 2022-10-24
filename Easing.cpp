@@ -5,21 +5,25 @@
 
 #include "BaseData.hpp"
 
-float easingMove(float start, float end, float easingVolume) {
+float EasingMove(float start, float end, float easingVolume) {
     return ((start)+((end)-(start)) * (easingVolume));
 }
 
-int intEasingMove(long int start, long int end, float easingVolume) {
+Vector2 EasingMove(const Vector2 &start, const Vector2 &end, const float &easingVolume) {
+    return ((start)+((end)-(start)) * (easingVolume));
+}
+
+int IntEasingMove(long int start, long int end, float easingVolume) {
     return ((start)+(((end)-(start)) * (easingVolume)));
 }
 
 unsigned int ColorEasingMove(unsigned int statColor, unsigned int endColor, float easingVolume) {
 
-    unsigned int redColor = Clamp(intEasingMove((((statColor & 0xFF000000) >> (4 * 6)) & 0xFF), (((endColor & 0xFF000000) >> (4 * 6)) & 0xFF), easingVolume), 0x00, 0xFF);
-    unsigned int greenColor = Clamp(intEasingMove((((statColor & 0x00FF0000) >> (4 * 4)) & 0xFF), (((endColor & 0x00FF0000) >> (4 * 4)) & 0xFF), easingVolume), 0x00, 0xFF);
-    unsigned int blueColor = Clamp(intEasingMove((((statColor & 0x0000FF00) >> (4 * 2)) & 0xFF), (((endColor & 0x0000FF00) >> (4 * 2)) & 0xFF), easingVolume), 0x00, 0xFF);
+    unsigned int redColor = Clamp(IntEasingMove((((statColor & 0xFF000000) >> (4 * 6)) & 0xFF), (((endColor & 0xFF000000) >> (4 * 6)) & 0xFF), easingVolume), 0x00, 0xFF);
+    unsigned int greenColor = Clamp(IntEasingMove((((statColor & 0x00FF0000) >> (4 * 4)) & 0xFF), (((endColor & 0x00FF0000) >> (4 * 4)) & 0xFF), easingVolume), 0x00, 0xFF);
+    unsigned int blueColor = Clamp(IntEasingMove((((statColor & 0x0000FF00) >> (4 * 2)) & 0xFF), (((endColor & 0x0000FF00) >> (4 * 2)) & 0xFF), easingVolume), 0x00, 0xFF);
 
-    unsigned int alphaColor = Clamp(intEasingMove((statColor & 0x000000FF), (endColor & 0x000000FF), easingVolume), 0x00, 0xFF);
+    unsigned int alphaColor = Clamp(IntEasingMove((statColor & 0x000000FF), (endColor & 0x000000FF), easingVolume), 0x00, 0xFF);
 
     return (redColor << (4 * 6)) + (greenColor << (4 * 4)) + (blueColor << (4 * 2)) + (alphaColor);
 

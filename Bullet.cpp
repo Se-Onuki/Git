@@ -35,7 +35,8 @@ void Bullet::DrawBullet() {
 	}
 }
 
-void Bullet::BulletDelete() {
+void Bullet::OutScreen() {
+
 	for (int i = 0; i < BulletMaxCount; i++) {
 		if (bullet[i].position.x < 0 || bullet[i].position.x > ScreenSize.x) {
 			bullet[i].isAlive = false;
@@ -46,6 +47,11 @@ void Bullet::BulletDelete() {
 		}
 
 	}
+}
+
+
+void Bullet::BulletDelete() {
+	OutScreen();
 }
 
 void Bullet::BulletUpdate() {

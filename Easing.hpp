@@ -1,12 +1,16 @@
 #pragma once
 
+#include "Vector2.hpp"
+
 #define functionEasing(start , end, easingVolume, easingType)  easingMove(start, end, easingType(easingVolume))
 #define easePlane(number) number
 
-float easingMove(float start, float end, float easingVolume);
+float EasingMove(float start, float end, float easingVolume);
+
+Vector2 EasingMove(const Vector2 &start, const Vector2 &end, const float &easingVolume);
 
 
-int intEasingMove(long int start, long int end, float easingVolume);
+int IntEasingMove(long int start, long int end, float easingVolume);
 
 unsigned int ColorEasingMove(unsigned int statColor, unsigned int endColor, float easingVolume);
 

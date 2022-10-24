@@ -20,7 +20,12 @@ float Vector2::Length() const {
 }
 
 Vector2 Vector2::Nomalize() const {
-	return { (x / this->Length()),(y / this->Length()) };
+	if (this->Length() != 0) {
+		return { (x / this->Length()),(y / this->Length()) };
+	}
+	else {
+		return ZeroVector2;
+	}
 }
 
 void Vector2::Vector2Printf(int x, int y) const {

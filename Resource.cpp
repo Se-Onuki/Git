@@ -18,6 +18,10 @@ float ToWorld(float y) {
 	return (-(y)+WorldPos);
 };
 
+Vector2 ToWorld(Vector2 position) {
+	return { position.x,(-(position.y) + WorldPos) };
+};
+
 void DrawQuadFunction(Vector2 centor, Vector2 size, int srcX, int srcY, int srcW, int srcH, unsigned int textureHandle, unsigned int color) {
 	Novice::DrawQuad((centor.x - Camera::scroll.x) - ((size.x) / 2), ToWorld((centor.y - Camera::scroll.y) + ((size.y) / 2)), (centor.x - Camera::scroll.x) + ((size.x) / 2), ToWorld((centor.y - Camera::scroll.y) + ((size.y) / 2)), (centor.x - Camera::scroll.x) - ((size.x) / 2), ToWorld((centor.y - Camera::scroll.y) - ((size.y) / 2)), (centor.x - Camera::scroll.x) + ((size.x) / 2), ToWorld((centor.y - Camera::scroll.y) - ((size.y) / 2)), srcX, srcY, srcW, srcH, textureHandle, color);
 };

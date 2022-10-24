@@ -109,12 +109,16 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix2x2.cpp" />
+    <ClCompile Include="Number.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PolarCoordinates.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SpriteClass.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
@@ -151,14 +155,18 @@
     <ClInclude Include="Easing.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="Fade.hpp" />
     <ClInclude Include="Map.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="Matrix2x2.hpp" />
+    <ClInclude Include="Number.hpp" />
     <ClInclude Include="Particle.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="PolarCoordinates.hpp" />
     <ClInclude Include="Resource.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="SpriteClass.hpp" />
+    <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Vector2.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

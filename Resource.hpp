@@ -17,6 +17,14 @@ const int WorldPos = ScreenSize.y;
 float ToWorld(float y);
 
 
+/// <summary>
+/// スクリーン座標とワールド座標で相互変換する関数。
+/// </summary>
+/// <param name="position">変換したい値</param>
+/// <returns>変換後の値</returns>
+Vector2 ToWorld(Vector2 position);
+
+
 
 
 /// <summary>

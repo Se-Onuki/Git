@@ -26,6 +26,8 @@ public:
 	static void DrawBullet();
 
 	static void BulletEnemyHit();
+	
+	static void OutScreen();
 	static void BulletDelete();
 	static void BulletUpdate();
 
