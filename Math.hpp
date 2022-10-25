@@ -86,3 +86,10 @@ PolarCoordinates Vector2ToPolar(Vector2 Vector);
 /// <param name="VectorB">ベクトルB</param>
 /// <returns>内積計算の結果</returns>
 Matrix2x2 MakeRotateMatrix(const float &theta);
+
+/// <summary>
+/// 総和関数
+/// </summary>
+/// <param name="value">引数</param>
+/// <returns>全ての値の合計値</returns>
+int Sum(int value);

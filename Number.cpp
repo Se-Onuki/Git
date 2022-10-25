@@ -39,10 +39,12 @@ void Number::setDrawPosition(const DRAW_POSITION &Position) {
 
 
 void Number::NumberUpdate() {
+	NumberTextReset();
 	NumberToText();
 }
 
 void Number::NumberUpdate(const int &number) {
+	NumberTextReset();
 	this->number = number;
 	NumberToText();
 }
@@ -56,13 +58,23 @@ void Number::NumberToText() {
 
 	for (int i = 0; i < 100; i++) {
 		if (NumberToCharactor(i)) {
-			text[i] = NumberToCharactor( i) + 48;
+			text[i] = NumberToCharactor(i) + 48;
 
 		}
 		else if (number / (int)pow(10, i + 1)) {
 			text[i] = NumberToCharactor(i) + 48;
 		}
 	}
-
+	if (number == 0) {
+		text[0] = NumberToCharactor(0) + 48;
+	}
 	std::reverse(text, text + strlen(text));
+}
+
+
+
+void Number::NumberTextReset() {
+	for (int i = 0; i < TextMax; i++) {
+		text[i] = 0;
+	}
 }

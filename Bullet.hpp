@@ -26,7 +26,7 @@ public:
 	static void DrawBullet();
 
 	static void BulletEnemyHit();
-	
+
 	static void OutScreen();
 	static void BulletDelete();
 	static void BulletUpdate();
@@ -44,12 +44,17 @@ private:
 
 inline void Bullet::BulletEnemyHit() {
 	for (int i = 0; i < BulletMaxCount; i++) {
-		for (int j = 0; j < EnemyMax; j++) {
-			if (BallCollision(bullet[i].position, bullet[i].radius, enemy[j].position, enemy[j].radius)) {
-				enemy[j].Reset();
-				Novice::DrawEllipse(0, 0, 10, 10, 0.0f, GREEN, kFillModeSolid);
+		if (bullet[i].isAlive) {
+			for (int j = 0; j < EnemyMax; j++) {
+				if (BallCollision(bullet[i].position, bullet[i].radius, enemy[j].position, enemy[j].radius)) {
+					enemy[j].speed -= 0.75;
+					Reset(i);
+					//	enemy[j].Reset();
+					//	totalKill++;
+						//	Novice::DrawEllipse(0, 0, 10, 10, 0.0f, GREEN, kFillModeSolid);
+					break;
+				}
 			}
 		}
 	}
-
 }

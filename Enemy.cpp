@@ -17,27 +17,22 @@ Enemy::Enemy()
 
 void Enemy::Reset() {
 	position = MiddleCentor;
-	radius = 32;
 
-	textureHandle = Novice::LoadTexture("./Resources/Texture/Entity/Enemy/Arrow.png");
-	srcH = 128;
-	srcW = 128;
-	needNextFlame = 30;
-	maxFlame = 2;
+//	resetCount++;
 
 	isAlive = false;
 }
 
 void Enemy::Spawn() {
 
-	textureHandle = Novice::LoadTexture("./Resources/Texture/Entity/Enemy/Arrow.png");
-	srcH = 128;
-	srcW = 128;
+	textureHandle = Novice::LoadTexture("./Resources/Texture/Entity/Enemy/enemy1.png");
+	srcH = 176;
+	srcW = 176;
 
-	needNextFlame = 30;
-	maxFlame = 2;
+	needNextFlame = 0;
+	maxFlame = 1;
 
-    radius = 32;
+    radius = 48;
 	color = 0xFFFFFFFF;
 
 

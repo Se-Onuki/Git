@@ -21,7 +21,7 @@ void Player::DrawEntity() {
 
 	Novice::DrawLine(position.x, ToWorld(position.y), prePosition.x, ToWorld(prePosition.y), 0xFF0000FF);
 	if (nowPolar.theta != prePolar.theta) {
-		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar((PolarToVector2(nowPolar)-PolarToVector2(prePolar)) * -1).theta, color);
+		DrawQuadFunction(position, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar((PolarToVector2(nowPolar) - PolarToVector2(prePolar)) * -1).theta, color);
 		DrawQuadFunction(prePosition, { radius * 2,radius * 2 }, srcX, srcY, srcW, srcH, textureHandle, Vector2ToPolar((PolarToVector2(nowPolar) - PolarToVector2(prePolar)) * -1).theta, (color & 0xFFFFFF00) + (color & 0xFF) / 2);
 	}
 	else {
@@ -50,17 +50,8 @@ void Player::EntityUpdate() {
 			position = prePosition;
 
 			if (velocity.Length() != 0) {
-			//	reverse *= -1;
+				/*reverse *= -1;*/
 				BulletShooting();
-				//for (int i = 0; i < Bullet::BulletMaxCount; i++) {
-				//	if (!Bullet::bullet[i].isAlive) {       //バレットスポーン関数を作る
-				//		Bullet::bullet[i].isAlive = true;
-				//		Bullet::bullet[i].velocity = this->velocity;
-				//		Bullet::bullet[i].position = this->position;
-
-				//		break;
-				//	}
-				//}
 			}
 
 			velocity = ZeroVector2;
@@ -73,7 +64,19 @@ void Player::EntityUpdate() {
 }
 
 
+void Player::BulletShooting() {
 
+	for (int i = 0; i < Bullet::BulletMaxCount; i++) {		//バレットスポーン関数
+		if (!Bullet::bullet[i].isAlive) {
+			Bullet::bullet[i].isAlive = true;
+			Bullet::bullet[i].velocity = this->velocity;
+			Bullet::bullet[i].position = this->position;
+
+			break;
+		}
+	}
+
+}
 
 void Player::Reset(int count) {
 	position = MiddleCentor;
@@ -111,5 +114,4 @@ void Player::Reset(int count) {
 //		Boss::hp -= 1;
 //	}
 //}
-
 

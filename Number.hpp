@@ -35,6 +35,7 @@ public:
 	Number(const int &texture);
 	void DrawNumber(Vector2 position, Vector2 size) const;
 
+	void NumberTextReset();
 
 	void NumberUpdate();
 	void NumberUpdate(const int &number);

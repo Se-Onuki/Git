@@ -13,8 +13,6 @@
 
 #include "Enemy.hpp"
 
-#include "Bullet.hpp"
-
 class Player : public Entity
 {
 public:
@@ -40,12 +38,16 @@ public:
 
     bool isInput = false;
 
-    int reverse = 1;
+    int reverse = -1;
 
 protected:
 };
 
 static unsigned int playerCount = 2;
+
+static bool isPlayerRelease;
+static bool preisPlayerRelease;
+
 
 inline void Player::EntityMoveInput() {
     if (isKeyPress(DIK_SPACE)) {
@@ -54,11 +56,15 @@ inline void Player::EntityMoveInput() {
             prePolar.theta += Degree2Radian(3 * reverse);
             prePosition = MapCentor + PolarToVector2(prePolar);
         }
- /*       else if (!isKeyPress(DIK_BACKSPACE)) {
-            isInput = true;
-            prePolar.theta += Degree2Radian(3 * reverse);
-            prePosition = MapCentor + PolarToVector2(prePolar);
-        }*/
+        /*       else if (!isKeyPress(DIK_BACKSPACE)) {
+                   isInput = true;
+                   prePolar.theta += Degree2Radian(3 * reverse);
+                   prePosition = MapCentor + PolarToVector2(prePolar);
+               }*/
+
+        if (!preKeys[DIK_SPACE]) {
+            isPlayerRelease = false;
+        }
 
 
     }
@@ -73,6 +79,8 @@ inline void Player::EntityMoveInput() {
            )
         {*/
         velocity = Nomalize(Vector2Difference(position, prePosition)) * speed;
+
+        isPlayerRelease = true;
 
         //}
         /*
@@ -91,22 +99,21 @@ inline void Player::EnemyHit() {
         for (int i = 0; i < EnemyMax; i++) {
             if (enemy[i].isAlive) {
                 if (BallCollision(position, radius, enemy[i].position, enemy[i].radius)) {
+                    //killCount++;
+
+                    ///*if (isPlayerRelease) {
+                    //    onceKillCount++;
+                    //}
+
+                    //if (!isPlayerRelease && keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+                    //    onceKillCount = 1;
+
+                    //    killScore += killCount * onceKillCount;
+                    //}
+                    //*/
                     enemy[i].Reset();
                 }
             }
         }
     }
-}
-
-inline void Player::BulletShooting() {
-    for (int i = 0; i < Bullet::BulletMaxCount; i++) {
-        if (!Bullet::bullet[i].isAlive) {       //バレットスポーン関数を作る
-            Bullet::bullet[i].isAlive = true;
-            Bullet::bullet[i].velocity = this->velocity;
-            Bullet::bullet[i].position = this->position;
-
-            break;
-        }
-    }
-
 }

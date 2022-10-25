@@ -64,19 +64,19 @@ void Bullet::BulletUpdate() {
 
 void Bullet::BulletReset() {
 	for (int i = 0; i < BulletMaxCount; i++) {
-		bullet[i].radius = 16;
+		bullet[i].radius = 32;
 		bullet[i].acceleration.Reset();
 		bullet[i].color = 0xffffffff;
 		bullet[i].position.Reset();
 		bullet[i].velocity.Reset();
-		bullet[i].srcX = 16;
-		bullet[i].srcY = 16;
+		bullet[i].srcX = 0;
+		bullet[i].srcY = 0;
 
 
 
-		bullet[i].textureHandle = TestCircleTexture;
-		bullet[i].srcH = 1;
-		bullet[i].srcW = 1;
+		bullet[i].textureHandle = Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/Arrow.png");
+		bullet[i].srcH = 152;
+		bullet[i].srcW = 152;
 		bullet[i].needNextFlame = 0;
 		bullet[i].maxFlame = 1;
 	}

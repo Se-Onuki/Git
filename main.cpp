@@ -34,6 +34,8 @@
 #include "Boss.hpp"
 
 
+void GameAllReset();
+
 
 const char kWindowTitle[] = "LC1A_05_オヌキセイヤ";
 
@@ -92,7 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int sceneFlame = 0;
 
 
-	Player player[3] = { Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/Heart.png"), 224, 224, 0, 1),Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/Heart.png"), 224, 224, 0, 1),Player(TestCircleTexture, 32, 32, 0, 1) };
+	Player player[3] = { Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/love.png"), 152, 152, 0, 1),Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/love.png"), 152, 152, 0, 1),Player(TestCircleTexture, 32, 32, 0, 1) };
 
 	for (int i = 0; i < playerCount; i++) {
 		player[i].Reset(i);
@@ -113,6 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/8.png"),
 		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png") };*/
 
+	Number scoreText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 	Number comboText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 
 	Number killText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
@@ -132,7 +135,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png")
 		}
 	);*/
-	comboText.color = 0x00000044;
+	scoreText.color = 0x00000044;
 
 	Bullet::BulletReset();
 
@@ -140,7 +143,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Boss boss;
 
+	int scoreFlameCount = 0;
+	int score = 0;
 
+	int mapTexture = Novice::LoadTexture("./Resources/Texture/Map/circle.png");
+
+	int gameFlame = 0;
+
+	bool isWave = 0;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -301,18 +311,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::GameScene:
 			flame++;
 			if (canInput) {
-
+				gameFlame++;
 			}
-
 			particleTest.CheckDelete();
 			particleCircle.CheckDelete();
-
 			if (canInput) {
 				for (int i = 0; i < playerCount; i++) {
 					player[i].EntityMoveInput();
 
 					if (player[i].velocity.Length() != 0 || isKeyPress(DIK_SPACE)) {
-						particleTest.Spawn(player[i].position);
+						particleTest.Spawn(player[i].position, 1, 0xFF0000FF);
 					}
 				}
 			}
@@ -327,8 +335,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemy[i].Despawn();
 			}
 
+			
 
-			if (isKeyTrigger(DIK_A)) {
+
+			/*if (flame > 2000) {
+				spawnFlame = 60;
+			}
+			else if (flame > 1000) {
+
+			}
+			else if (flame > 600) {
+				spawnFlame = 120;
+			}
+			else if (flame > 500) {
+				spawnFlame = 10;
+			}
+			else if (flame > 0) {
+				spawnFlame = GetRandom(120,150);
+			}*/
+			
+
+			if (totalKill < 10 && totalKill >= 0) {
+				spawnFlame = GetRandom(150, 180);
+			}
+			if (totalKill < 30 && totalKill >= 10) {
+				spawnFlame = GetRandom(100, 140);
+			}
+			if (totalKill < 60 && totalKill >= 30) {
+				spawnFlame = GetRandom(50, 100);
+			}
+			if (totalKill < 100 && totalKill >= 60) {
+				spawnFlame = GetRandom(30, 70);
+			}
+			if (totalKill >= 100) {
+				spawnFlame = GetRandom(1, 40);
+			}
+
+
+			if (/*gameFlame % spawnFlame == 0*/ isKeyTrigger(DIK_A) && Scene::GameScene == Scene::nowScene) {
 				for (int i = 0; i < EnemyMax; i++) {
 					if (!enemy[i].isAlive) {
 						enemy[i].Spawn();
@@ -337,6 +381,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
+			/*
 			if (isKeyTrigger(DIK_E)) {
 				for (int i = 0; i < EnemyMax; i++) {
 					if (!enemy[i].isAlive) {
@@ -371,9 +416,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 			}
+			*/
 
 			player[1].nowPolar.theta = player[0].nowPolar.theta + Degree2Radian(360 / playerCount);
 			player[1].prePolar.theta = player[0].prePolar.theta + Degree2Radian(360 / playerCount);
+
 			for (int i = 0; i < playerCount; i++) {
 				player[i].EntityUpdate();
 			}
@@ -392,6 +439,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						if (enemy[j].isAlive) {
 							if (BallCollision(player[i].position, player[i].radius, enemy[j].position, enemy[j].radius)) {
 								particleTest.Spawn(enemy[j].position, 10, 0x000000FF);
+								killCount++;
+								totalKill++;
 							}
 						}
 					}
@@ -401,17 +450,64 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Bullet::BulletUpdate();
 			Bullet::BulletDelete();
+
+			for (int i = 0; i < Bullet::BulletMaxCount; i++) {
+				for (int j = 0; j < EnemyMax; j++) {
+					if (BallCollision(Bullet::bullet[i].position, Bullet::bullet[i].radius, enemy[j].position, enemy[j].radius)) {
+						const int BulletKillText = 1;
+						comboText.NumberUpdate(BulletKillText);
+						comboText.color = BulletKillText < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)BulletKillText) / 10.0f) : ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)BulletKillText - 10) / 10.0f);
+
+						//	Novice::DrawEllipse(0, 0, 10, 10, 0.0f, GREEN, kFillModeSolid);
+					}
+				}
+			}
 			Bullet::BulletEnemyHit();
-			//	Bullet::BulletReset();
+			///*Bullet::BulletReset();*/
 
 
 
+			if (gameFlame % 30 == 0) {
 
+				scoreFlameCount = gameFlame / 30;
+
+			}
+
+
+
+			//for (int i = 0; i < playerCount; i++) {
+			//	/*if (!isPlayerRelease && keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+			//		onceKillCount = 1;
+
+			//		killScore += killCount * onceKillCount;
+			//	}*/
+			//	if (player[i].velocity.Length() != 0) {
+
+			//	}
+			//}
+
+
+			if (player[0].velocity.Length() == 0 && killCount != 0) {
+				comboText.NumberUpdate(killCount);
+				comboText.color = killCount < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)killCount) / 10.0f): ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)killCount - 10) / 10.0f);
+
+				killScore += pow(2, killCount) - 1;
+				killCount = 0;
+			}
+
+			
+
+
+			score = scoreFlameCount + killScore;
 
 
 			Camera::Update();
-			comboText.NumberUpdate(flame);
-			comboText.setDrawPosition(Number::Centor);
+			scoreText.NumberUpdate(score);
+			scoreText.setDrawPosition(Number::Centor);
+
+			comboText.setDrawPosition(Number::Right);
+
+
 
 
 			break;
@@ -461,7 +557,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			comboText.DrawNumber(MiddleCentor, Vector2{ 56, 128 } *6);
+			scoreText.DrawNumber(MiddleCentor, Vector2{ 56, 128 } *6);
+			comboText.DrawNumber(MiddleRight, Vector2{ 56, 128 } *2);
 
 
 			Bullet::DrawBullet();
@@ -472,7 +569,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//Novice::ScreenPrintf(10, 100, "%.3f", Length(Bullet::bullet[0].position, enemy[0].position) - (Bullet::bullet[0].radius + enemy[0].radius));
 
-			Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), MapRadius, MapRadius, 0.0f, 0xFFFFFFFF, kFillModeWireFrame);
+		//	Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), MapRadius, MapRadius, 0.0f, 0xFFFFFFFF, kFillModeWireFrame);
+			DrawQuadFunction(MiddleCentor, { 700,700 }, 0, 0, 700, 700, mapTexture, 0xFFFFFFFF);
 
 			Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), 64, 64, 0.0f, 0x00FF00FF, kFillModeSolid);
 
@@ -491,17 +589,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			/*if (boss.isAlive) {
+			
 
-				if (boss.attackFlag) {
-					Novice::DrawLine(boss.statePosition.x, ToWorld(boss.statePosition.y), boss.endPosition.x, ToWorld(boss.endPosition.y), 0x00ffffff);
-					boss.BossDraw();
-				}
-
-				//	Novice::DrawEllipse(boss.position.x, ToWorld(boss.position.y), boss.srcX, boss.srcY, 0.0f, boss.color, kFillModeSolid);
-
+			/*if (isWave) {
+				Novice::DrawEllipse(MapCentor,MapCentor,)
 			}*/
-
 
 
 			//	enemy[0].DrawEntity();
@@ -511,6 +603,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///*Novice::ScreenPrintf(100, 170, "bullet.y %f", );*/
 			//Novice::ScreenPrintf(100, 250, "velocity.x %f", player[0].velocity.x);
 			//Novice::ScreenPrintf(100, 270, "velocity.y %f", player[0].velocity.y);
+			
+			Novice::ScreenPrintf(100, 100, "totalKill %d", totalKill);
+			Novice::ScreenPrintf(100, 150, "isPlayerRelease %d", isPlayerRelease);
+			/*Novice::ScreenPrintf(100, 170, "bullet.y %f", );*/
+			Novice::ScreenPrintf(100, 250, "velocity.x %f", player[0].velocity.x);
+			Novice::ScreenPrintf(100, 270, "velocity.y %f", player[0].velocity.y);
 
 			break;
 		case Scene::ResultScene:
@@ -547,3 +645,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Finalize();
 	return 0;
 }
+
+
+void GameAllReset() {
+	totalKill = 0;
+}
+

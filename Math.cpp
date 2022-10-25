@@ -57,3 +57,13 @@ PolarCoordinates Vector2ToPolar(Vector2 Vector) {
 Matrix2x2 MakeRotateMatrix(const float &theta) {
 	return Matrix2x2(cos(theta), sin(theta), -sin(theta), cos(theta));
 }
+
+
+int Sum(int value) {
+	if (value == 0) {
+		return 0;
+	}
+	else {
+		return value + Sum(value - 1);
+	}
+}
