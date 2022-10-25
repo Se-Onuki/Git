@@ -202,19 +202,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::TitleScene) {
+			if (fadeClass.isFinish() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::TitleScene) {
 				fadeClass.FlameEnd();
 			}
-
-
-			if (!fadeClass.isActive() && Scene::preScene == Scene::TitleScene) {
+			if (fadeClass.isFinish() && Scene::preScene == Scene::TitleScene) {
 				fadeClass.FadeSetting(easeInExpo);
 				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
 				fadeClass.FlameEnd();
 				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0x00000000, 60 * 1.5);
 			}
 
-			if (isKeyPress(DIK_SPACE)) {
+			if (isKeyPress(DIK_SPACE) && !fadeClass.isActive()) {
 
 				Scene::preScene = Scene::GameScene;
 
@@ -228,26 +226,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			break;
 		case Scene::GameScene:
-			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::GameScene) {
+			if (fadeClass.isFinish() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::GameScene) {
 				fadeClass.FlameEnd();
 				inputFlame++;
 			}
 			else if (inputFlame < 60 && inputFlame != 0) {
 				inputFlame++;
 			}
-			if (inputFlame >= 60) {
+			else if (inputFlame >= 60) {
 				canInput = true;
 				inputFlame = 0;
 			}
 
-			if (!fadeClass.isActive() && Scene::preScene == Scene::GameScene) {
+			if (fadeClass.isFinish() && Scene::preScene == Scene::GameScene) {
 				fadeClass.FadeSetting(easeInExpo);
 				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
 				fadeClass.FlameEnd();
 				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0xFFFFFF00, 60 * 1.5);
 			}
 
-			if (isKeyPress(DIK_O)) {
+			if (isKeyPress(DIK_O) && !fadeClass.isActive()) {
 
 
 				Scene::preScene = Scene::ResultScene;
@@ -263,12 +261,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case Scene::ResultScene:
-			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::ResultScene) {
+			if (fadeClass.isFinish() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::ResultScene) {
 				fadeClass.FlameEnd();
 			}
 
 
-			if (!fadeClass.isActive() && Scene::preScene == Scene::ResultScene) {
+			if (fadeClass.isFinish() && Scene::preScene == Scene::ResultScene) {
 				fadeClass.FadeSetting(easeInExpo);
 				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
 				fadeClass.FlameEnd();
@@ -276,7 +274,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 
-			if (isKeyPress(DIK_SPACE)) {
+			if (isKeyPress(DIK_SPACE) && !fadeClass.isActive()) {
 
 
 				Scene::preScene = Scene::TitleScene;
@@ -301,8 +299,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case Scene::GameScene:
+			flame++;
 			if (canInput) {
-				flame++;
+
 			}
 
 			particleTest.CheckDelete();
@@ -462,7 +461,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			comboText.DrawNumber(MiddleCentor, Vector2{ 56, 128 } * 6);
+			comboText.DrawNumber(MiddleCentor, Vector2{ 56, 128 } *6);
 
 
 			Bullet::DrawBullet();
@@ -527,6 +526,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//	Novice::DrawBox(fadeClass.fadePosition.x - fadeClass.fadeSize.x, fadeClass.fadePosition.y - fadeClass.fadeSize.y, fadeClass.fadeSize.x * 2, fadeClass.fadeSize.y * 2, 0.0f, fadeClass.fadeColor, kFillModeSolid);
 		Novice::DrawBox(0, 0, ScreenSize.x, ScreenSize.y, 0.0f, fadeClass.fadeColor, kFillModeSolid);
+
+		Novice::DrawBox(0, 490, 300, 40, 0.0f, 0x555555FF, kFillModeSolid);
+		Novice::ScreenPrintf(10, 500, "fadeClass %d / %d / %d", fadeClass.isFinish(), fadeClass.GetNowFlame(), fadeClass.GetGoalFlame());
 
 		///
 		/// ↑描画処理ここまで
