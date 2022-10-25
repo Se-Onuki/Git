@@ -13,6 +13,8 @@
 
 #include "Enemy.hpp"
 
+#include "Bullet.hpp"
+
 class Player : public Entity
 {
 public:
@@ -94,4 +96,17 @@ inline void Player::EnemyHit() {
             }
         }
     }
+}
+
+inline void Player::BulletShooting() {
+    for (int i = 0; i < Bullet::BulletMaxCount; i++) {
+        if (!Bullet::bullet[i].isAlive) {       //バレットスポーン関数を作る
+            Bullet::bullet[i].isAlive = true;
+            Bullet::bullet[i].velocity = this->velocity;
+            Bullet::bullet[i].position = this->position;
+
+            break;
+        }
+    }
+
 }

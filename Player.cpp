@@ -50,8 +50,17 @@ void Player::EntityUpdate() {
 			position = prePosition;
 
 			if (velocity.Length() != 0) {
-				reverse *= -1;
-				//BulletShooting();
+			//	reverse *= -1;
+				BulletShooting();
+				//for (int i = 0; i < Bullet::BulletMaxCount; i++) {
+				//	if (!Bullet::bullet[i].isAlive) {       //バレットスポーン関数を作る
+				//		Bullet::bullet[i].isAlive = true;
+				//		Bullet::bullet[i].velocity = this->velocity;
+				//		Bullet::bullet[i].position = this->position;
+
+				//		break;
+				//	}
+				//}
 			}
 
 			velocity = ZeroVector2;
@@ -64,19 +73,7 @@ void Player::EntityUpdate() {
 }
 
 
-void Player::BulletShooting() {
 
-	for (int i = 0; i < Bullet::BulletMaxCount; i++) {
-		if (!Bullet::bullet[i].isAlive) {       //バレットスポーン関数を作る
-			Bullet::bullet[i].isAlive = true;
-			Bullet::bullet[i].velocity = this->velocity;
-			Bullet::bullet[i].position = this->position;
-
-			break;
-		}
-	}
-
-}
 
 void Player::Reset(int count) {
 	position = MiddleCentor;

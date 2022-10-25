@@ -52,6 +52,24 @@ void Particle::Spawn(const Vector2& Position, unsigned int needSpawn) {
 }
 
 
+void Particle::Spawn(const Vector2& Position, unsigned int needSpawn, unsigned int color) {
+	int spawnedCount = 0;
+	for (int i = 0; i < ParticleMax && spawnedCount <= needSpawn; i++) {
+		if (!particles[i].isAlive) {
+			this->particles[i].color = color;
+
+			particles[i].velocity = PolarToVector2({ (float)(GetRandom(0,3)),(float)(Degree2Radian(GetRandom(0,359))) });
+			particles[i].position = Position;
+			particles[i].radius = GetRandom(5, 15);
+			particles[i].maxFlame = GetRandom(40, 60);
+
+			particles[i].isAlive = true;
+			spawnedCount++;
+		}
+	}
+}
+
+
 void Particle::Update() {
 
 

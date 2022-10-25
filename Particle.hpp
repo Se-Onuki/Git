@@ -39,6 +39,7 @@ public:
 
 	void Spawn(const Vector2& Position);
 	void Spawn(const Vector2& Position, unsigned int count);
+	void Spawn(const Vector2 &Position, unsigned int needSpawn, unsigned int color);
 
 	void Update();
 

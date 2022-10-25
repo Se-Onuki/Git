@@ -62,7 +62,7 @@ public:
 			fadeSize.x = EasingMove(startSize.x, endSize.x, easingPointer(GetProgress()));
 			fadeSize.y = EasingMove(startSize.y, endSize.y, easingPointer(GetProgress()));
 
-			ColorEasingMove(startColor, endColor, easingPointer(GetProgress()));
+			fadeColor = ColorEasingMove(startColor, endColor, easingPointer(GetProgress()));
 
 			AddFlame();
 		}
@@ -130,5 +130,5 @@ public:
 };
 */
 
-Fade fadeClass;
-BGMvolumeClass BGMvolume;
+static Fade fadeClass;
+//BGMvolumeClass BGMvolume;

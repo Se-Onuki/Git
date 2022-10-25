@@ -15,6 +15,8 @@ public:
 	
 	static void SceneChange(SCENE);
 
+	static int SceneChangeFlame;
+
 private:
 
 };

@@ -1,4 +1,6 @@
 ﻿#include <Novice.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "BaseData.hpp"
 #include "SpriteClass.hpp"
@@ -8,6 +10,8 @@
 
 #include "Camera.hpp"
 #include "Scene.hpp"
+
+#include "Fade.hpp"
 
 
 #include "Math.hpp"
@@ -55,8 +59,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DefaultNumberTexture[9] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png");
 
 
+	const int HurtWithHeart = Novice::LoadTexture("./Resources/Texture/Title/HurtWithHeart.png");
+	const int HwHBG = Novice::LoadTexture("./Resources/Texture/Title/HwHBG.png");
+	const int HeartsBG = Novice::LoadTexture("./Resources/Texture/Title/Hearts.png");
+	const int SpaceBG = Novice::LoadTexture("./Resources/Texture/Title/space.png");
+
+	const int TitleHeartTexture = Novice::LoadTexture("./Resources/Texture/Title/titleHeart.png");
+
+
 	const int WhiteBG = Novice::LoadTexture("./Resources/Texture/Background/WhiteBG.png");
 
+
+	const int GameOver = Novice::LoadTexture("./Resources/Texture/Title/GameOver.png");
+
+	const int HeartCount = 20;
+	Vector2 HeartPosition[HeartCount] = { };
+	int HeartSize[HeartCount] = { };
+	int HeartLifeSpan[HeartCount] = { };
 
 	ImportTexture();
 
@@ -65,6 +84,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	for (int i = 0; i < EnemyMax; i++) {
 		enemy[i].Reset();
 	}
+
+
+	int inputFlame = 0;
+	bool canInput = false;
+
+	int sceneFlame = 0;
+
 
 	Player player[3] = { Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/Heart.png"), 224, 224, 0, 1),Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/Heart.png"), 224, 224, 0, 1),Player(TestCircleTexture, 32, 32, 0, 1) };
 
@@ -88,6 +114,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png") };*/
 
 	Number comboText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
+
+	Number killText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
+	Number aliveText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
+	Number totalText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 	/*(
 		{
 		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/0.png"),
@@ -125,42 +155,166 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-
-
-
-		switch (Scene::nowScene)
-		{
-		case Scene::TitleScene:
-			break;
-		case Scene::GameScene:
-			break;
-		case Scene::ResultScene:
-			break;
-		default:
-			break;
-		}
-
-		TextureUpdate();
-		flame++;
+		fadeClass.FadeUpdate();
 
 
 		switch (Scene::nowScene)
 		{
 		case Scene::TitleScene:
-			if (isKeyPress(DIK_SPACE)) {
+
+			inputFlame = 0;
+			canInput = false;
+
+			if (fadeClass.isFinish() && Scene::preScene == Scene::GameScene) {
 				Scene::nowScene = Scene::GameScene;
 			}
 
 			break;
 		case Scene::GameScene:
+			if (fadeClass.isFinish() && Scene::preScene == Scene::ResultScene) {
+				Scene::nowScene = Scene::ResultScene;
+			}
+			break;
+		case Scene::ResultScene:
+			if (fadeClass.isFinish() && Scene::preScene == Scene::TitleScene) {
+				Scene::nowScene = Scene::TitleScene;
+			}
+			break;
+		default:
+			break;
+		}
+
+
+		TextureUpdate();
+
+		switch (Scene::nowScene)
+		{
+		case Scene::TitleScene:
+			for (int i = 0; i < HeartCount; i++) {
+				if (HeartLifeSpan[i] <= 0) {
+					HeartLifeSpan[i] = GetRandom(60 * 1, 60 * 4);
+					HeartSize[i] = GetRandom(32, 32 * 3);
+					HeartPosition[i] = Vector2{ (float)GetRandom(0, ScreenSize.x),(float)GetRandom(0,ScreenSize.y) };
+				}
+				else {
+					HeartLifeSpan[i]--;
+					HeartPosition[i] += {(float)(cos(Degree2Radian(HeartLifeSpan[i] * 5))) * 4, 3};
+				}
+			}
+
+			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::TitleScene) {
+				fadeClass.FlameEnd();
+			}
+
+
+			if (!fadeClass.isActive() && Scene::preScene == Scene::TitleScene) {
+				fadeClass.FadeSetting(easeInExpo);
+				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0x00000000, 60 * 1.5);
+			}
+
+			if (isKeyPress(DIK_SPACE)) {
+
+				Scene::preScene = Scene::GameScene;
+
+				//	if (!fadeClass.isActive()) {
+				fadeClass.FadeSetting(easeInExpo);
+				fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFF00);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0xFFFFFFFF, 60 * 1.5);
+				//	}
+
+			}
+			break;
+		case Scene::GameScene:
+			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::GameScene) {
+				fadeClass.FlameEnd();
+				inputFlame++;
+			}
+			else if (inputFlame < 60 && inputFlame != 0) {
+				inputFlame++;
+			}
+			if (inputFlame >= 60) {
+				canInput = true;
+				inputFlame = 0;
+			}
+
+			if (!fadeClass.isActive() && Scene::preScene == Scene::GameScene) {
+				fadeClass.FadeSetting(easeInExpo);
+				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0xFFFFFF00, 60 * 1.5);
+			}
+
+			if (isKeyPress(DIK_O)) {
+
+
+				Scene::preScene = Scene::ResultScene;
+
+				//if (!fadeClass.isActive()) {
+				fadeClass.FadeSetting(easeInExpo);
+				fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFF00);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleLeft, MiddleCentor, 0xFFFFFFFF, 60 * 1.5);
+				//}
+
+			}
+
+			break;
+		case Scene::ResultScene:
+			if (!fadeClass.isActive() && (fadeClass.fadeColor & 0xFF) == 0x00 && Scene::preScene == Scene::ResultScene) {
+				fadeClass.FlameEnd();
+			}
+
+
+			if (!fadeClass.isActive() && Scene::preScene == Scene::ResultScene) {
+				fadeClass.FadeSetting(easeInExpo);
+				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleLeft, MiddleCentor, 0xFFFFFF00, 60 * 1.5);
+			}
+
+
+			if (isKeyPress(DIK_SPACE)) {
+
+
+				Scene::preScene = Scene::TitleScene;
+
+				//if (!fadeClass.isActive()) {
+				fadeClass.FadeSetting(easeLinear);
+				fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0x00000000);
+				fadeClass.FlameEnd();
+				fadeClass.FadeStart(MiddleLeft, MiddleCentor, 0x000000FF, 60 * 2.5);
+				//}
+
+			}
+			break;
+		default:
+			break;
+		}
+
+
+		switch (Scene::nowScene)
+		{
+		case Scene::TitleScene:
+
+			break;
+		case Scene::GameScene:
+			if (canInput) {
+				flame++;
+			}
 
 			particleTest.CheckDelete();
 			particleCircle.CheckDelete();
-			for (int i = 0; i < playerCount; i++) {
-				player[i].EntityMoveInput();
 
-				if (player[i].velocity.Length() != 0 || isKeyPress(DIK_SPACE)) {
-					particleTest.Spawn(player[i].position);
+			if (canInput) {
+				for (int i = 0; i < playerCount; i++) {
+					player[i].EntityMoveInput();
+
+					if (player[i].velocity.Length() != 0 || isKeyPress(DIK_SPACE)) {
+						particleTest.Spawn(player[i].position);
+					}
 				}
 			}
 
@@ -169,7 +323,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			for (int i = 0; i < EnemyMax; i++) {
 				if (enemy[i].isAlive && BallCollision(enemy[i].position, enemy[i].radius, MapCentor, 30)) {
-					particleTest.Spawn(enemy[i].position, 5);
+					particleTest.Spawn(enemy[i].position, 5, 0x00FF00FF);
 				}
 				enemy[i].Despawn();
 			}
@@ -234,322 +388,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			for (int i = 0; i < playerCount; i++) {
+				if (player[i].velocity.Length() != 0) {
+					for (int j = 0; j < EnemyMax; j++) {
+						if (enemy[j].isAlive) {
+							if (BallCollision(player[i].position, player[i].radius, enemy[j].position, enemy[j].radius)) {
+								particleTest.Spawn(enemy[j].position, 10, 0x000000FF);
+							}
+						}
+					}
+				}
 				player[i].EnemyHit();
 			}
 
 			Bullet::BulletUpdate();
 			Bullet::BulletDelete();
 			Bullet::BulletEnemyHit();
-			Bullet::BulletReset();
+			//	Bullet::BulletReset();
 
-			if (isKeyTrigger(DIK_D)) {
-				boss.isAlive = true;
 
 
-
-
-				/*if (isCross(boss.endPosition, (boss.endPosition + ((boss.statePosition - boss.endPosition).Nomalize()) * 1000), ZeroVector2, { 0,ScreenSize.y }) ||
-					isCross(boss.endPosition, (boss.endPosition + ((boss.statePosition - boss.endPosition).Nomalize()) * 1000), ZeroVector2, { ScreenSize.x,ScreenSize.y })) {
-
-				}*/
-
-
-			}
-
-
-
-
-
-			if (boss.isAlive) {
-				boss.count++;
-
-				if (boss.count % 100 == 0 && boss.count != 0 && !boss.attackFlag) {
-					boss.attackFlag = true;
-
-					boss.statePosition = PolarToVector2(PolarCoordinates{ MapRadius,Degree2Radian(GetRandom(0,359)) }) + MapCentor;
-					boss.endPosition = PolarToVector2(PolarCoordinates{ MapRadius,Degree2Radian(GetRandom(0,359)) }) + MapCentor;
-
-					boss.statePosition = boss.statePosition + ((boss.statePosition - boss.endPosition).Nomalize()) * 1400;
-					boss.endPosition = boss.endPosition + ((boss.statePosition - boss.endPosition).Nomalize()) * -1400;
-
-				}
-
-				if (boss.attackFlag) {
-
-					for (int i = 0; i < 2; i++) {
-						Novice::ScreenPrintf(10, 710 + i * 20, "%f", Ellipse2LineLength(player[i].position, boss.statePosition, boss.endPosition));
-						player[i].position.Vector2Printf(0, 770 + i * 40);
-						boss.statePosition.Vector2Printf(0, 850);
-						boss.endPosition.Vector2Printf(0, 890);
-
-						if (Ellipse2LineLength(player[i].position, boss.statePosition, boss.endPosition) <= player[i].radius && player[i].velocity.Length() != 0) {
-							Boss::HitDamage();
-						}
-
-
-					}
-
-
-				}
-
-
-
-
-				/*
-				switch (movePattern1)
-				{
-				case 0://上スタート
-
-
-
-
-					switch (movePattern2)
-					{
-					case 0://左から1番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y -= 30;
-							boss.nowEndPosition.x += 17;
-						}
-
-
-						boss.statePosition.x = MiddleCentor.x - MapRadius;
-						boss.statePosition.y = ScreenSize.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius + boss.nowEndPosition.x;
-						boss.endPosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-						break;
-
-					case 1://左から2番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y -= 30;
-							boss.nowEndPosition.x += 0;
-						}
-
-
-						boss.statePosition.x = MiddleCentor.x - MapRadius * 0.5;
-						boss.statePosition.y = ScreenSize.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius * 0.5 + boss.nowEndPosition.x;
-						boss.endPosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-						break;
-
-					case 2://左から3番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y -= 30;
-							boss.nowEndPosition.x -= 0;
-						}
-
-
-						boss.statePosition.x = MiddleCentor.x + MapRadius * 0.5;
-						boss.statePosition.y = ScreenSize.y;
-
-						boss.endPosition.x = MiddleCentor.x + MapRadius * 0.5 + boss.nowEndPosition.x;
-						boss.endPosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-						break;
-
-					case 3://左から4番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y -= 30;
-							boss.nowEndPosition.x -= 17;
-						}
-
-
-						boss.statePosition.x = MiddleCentor.x + MapRadius;
-						boss.statePosition.y = ScreenSize.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius + boss.nowEndPosition.x;
-						boss.endPosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-						break;
-
-					}
-
-
-					boss.count++;
-					break;
-
-
-				case 1://下スタート
-
-
-
-					switch (movePattern2)
-					{
-					case 0://左から1番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y += 30;
-							boss.nowEndPosition.x += 17;
-						}
-
-
-						boss.statePosition.x = MiddleCentor.x + MapRadius;
-						boss.statePosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius;
-						boss.endPosition.y = ScreenSize.y;
-						break;
-
-					case 1://左から2番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y += 30;
-							boss.nowEndPosition.x += 17;
-						}
-
-
-
-						boss.statePosition.x = MiddleCentor.x - MapRadius * 0.5;
-						boss.statePosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius * 0.5;
-						boss.endPosition.y = ScreenSize.y;
-						break;
-
-					case 2://左から3番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y += 30;
-							boss.nowEndPosition.x += 17;
-						}
-
-
-
-						boss.statePosition.x = MiddleCentor.x + MapRadius * 0.5;
-						boss.statePosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-
-						boss.endPosition.x = MiddleCentor.x + MapRadius * 0.5;
-						boss.endPosition.y = ScreenSize.y;
-						break;
-
-					case 3://左から4番目
-						if (boss.endPosition.y > 0) {
-							boss.nowEndPosition.y += 30;
-							boss.nowEndPosition.x += 17;
-						}
-
-
-
-						boss.statePosition.x = MiddleCentor.x + MapRadius;
-						boss.statePosition.y = boss.statePosition.y + boss.nowEndPosition.y;
-
-						boss.endPosition.x = MiddleCentor.x - MapRadius;
-						boss.endPosition.y = ScreenSize.y;
-						break;
-
-					}
-					break;
-
-
-				case 2://右スタート
-
-					switch (movePattern2)
-					{
-					case 0://上から1番目
-						if (boss.endPosition.x > 0) {
-							boss.nowEndPosition.x -= 30;
-							boss.nowEndPosition.y -= 17;
-						}
-
-
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y + MapRadius;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y + MapRadius;
-						break;
-
-					case 1://上から2番目
-						if (boss.endPosition.x > 0) {
-							boss.nowEndPosition.x -= 30;
-							boss.nowEndPosition.y -= 17;
-						}
-
-
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y + MapRadius * 0.5;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y + MapRadius * 0.5;
-						break;
-
-					case 2://上から3番目
-						if (boss.endPosition.x > 0) {
-							boss.nowEndPosition.x -= 30;
-							boss.nowEndPosition.y -= 17;
-						}
-
-
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y - MapRadius * 0.5;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y - MapRadius * 0.5;
-						break;
-
-					case 3://上から4番目
-						if (boss.endPosition.x > 0) {
-							boss.nowEndPosition.x -= 30;
-							boss.nowEndPosition.y -= 17;
-						}
-
-
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y - MapRadius;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y - MapRadius;
-						break;
-
-					}
-
-					break;
-
-
-				case 3://左スタート
-
-
-					switch (movePattern2)
-					{
-					case 0://上から1番目
-
-
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y + MapRadius;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y + MapRadius;
-						break;
-
-					case 1://上から2番目
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y + MapRadius * 0.5;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y + MapRadius * 0.5;
-						break;
-
-					case 2://上から3番目
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y - MapRadius * 0.5;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y - MapRadius * 0.5;
-						break;
-
-					case 3://上から4番目
-						boss.statePosition.x = ScreenSize.x;
-						boss.statePosition.y = MiddleCentor.y - MapRadius;
-
-						boss.endPosition.x = boss.statePosition.x + boss.nowEndPosition.x;
-						boss.endPosition.y = MiddleCentor.y - MapRadius;
-						break;
-
-					}
-
-
-					break;
-				}
-				*/
-
-
-			}
 
 
 
@@ -573,10 +430,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		Bullet::bullet[0].position.Vector2Printf(0, 0);
+
 		switch (Scene::nowScene)
 		{
 		case Scene::TitleScene:
-			DrawQuadFunction(MiddleCentor, { 2048,1280 }, 0, 0, 1024, 640, WhiteBG, WHITE);
+
+			Novice::DrawSprite(0, 0, HwHBG, 1, 1, 0.0f, 0xFFFFFFFF);
+			//Novice::DrawSprite(0, 0, HeartsBG, 1, 1, 0.0f, 0xFFFFFFFF);
+			for (int i = 0; i < HeartCount; i++) {
+				if (HeartLifeSpan[i] > 0) {
+					DrawQuadFunction(HeartPosition[i], Vector2{ (float)HeartSize[i], (float)HeartSize[i] }, 0, 0, 91, 91, TitleHeartTexture, ColorEasingMove(0xFFFFFFAA, 0xFFFFFF00, HeartLifeSpan[i] <= 60 ? 1 - ((float)HeartLifeSpan[i]) / 60 : 0));
+				}
+			}
+
+
+			Novice::DrawSprite(0, 0, HurtWithHeart, 1, 1, 0.0f, 0xFFFFFFFF);
+			Novice::DrawSprite(0, 0, SpaceBG, 1, 1, 0.0f, ColorEasingMove(0xFFFFFFFF, 0xFFFFFF00, cos(Degree2Radian(TextureFlame * 5))));
+
+			//	DrawQuadFunction(MiddleCentor, { 2048,1280 }, 0, 0, 1024, 640, WhiteBG, WHITE);
 
 			break;
 		case Scene::GameScene:
@@ -619,7 +491,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					enemy[i].DrawEntity();
 				}
 			}
-			if (boss.isAlive) {
+
+			/*if (boss.isAlive) {
+
 				if (boss.attackFlag) {
 					Novice::DrawLine(boss.statePosition.x, ToWorld(boss.statePosition.y), boss.endPosition.x, ToWorld(boss.endPosition.y), 0x00ffffff);
 					boss.BossDraw();
@@ -627,7 +501,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//	Novice::DrawEllipse(boss.position.x, ToWorld(boss.position.y), boss.srcX, boss.srcY, 0.0f, boss.color, kFillModeSolid);
 
-			}
+			}*/
 
 
 
@@ -641,10 +515,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case Scene::ResultScene:
+			Novice::DrawSprite(0, 0, HwHBG, 1, 1, 0.0f, 0xFFFFFFFF);
+			Novice::DrawSprite(0, 0, GameOver, 1, 1, 0.0f, 0xFFFFFFFF);
+
+
+
 			break;
 		default:
 			break;
 		}
+
+		//	Novice::DrawBox(fadeClass.fadePosition.x - fadeClass.fadeSize.x, fadeClass.fadePosition.y - fadeClass.fadeSize.y, fadeClass.fadeSize.x * 2, fadeClass.fadeSize.y * 2, 0.0f, fadeClass.fadeColor, kFillModeSolid);
+		Novice::DrawBox(0, 0, ScreenSize.x, ScreenSize.y, 0.0f, fadeClass.fadeColor, kFillModeSolid);
 
 		///
 		/// ↑描画処理ここまで
