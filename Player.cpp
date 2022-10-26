@@ -79,6 +79,8 @@ void Player::BulletShooting() {
 }
 
 void Player::Reset(int count) {
+	*this = Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/love.png"), 152, 152, 0, 1);
+
 	position = MiddleCentor;
 	velocity.Reset();
 	radius = 32;

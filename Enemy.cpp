@@ -70,6 +70,7 @@ void Enemy::Despawn() {
 void Enemy::HitCore() {
 	if (BallCollision(position, radius, MapCentor, 30)) {
 		Camera::Shake({ 20,20 }, 30);
+		coreHP -= 1200;
 		Reset();
 	}
 }

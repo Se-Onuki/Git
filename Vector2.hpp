@@ -20,25 +20,25 @@ public:
 	float Length() const;
 	Vector2 Nomalize() const;
 
-	Vector2 operator+(const Vector2& Second) const;
-	Vector2 operator-(const Vector2& Second) const;
+	Vector2 operator + (const Vector2& Second) const;
+	Vector2 operator - (const Vector2& Second) const;
 	
 
-	void operator +=(const Vector2& Second);
-	void operator -=(const Vector2& Second);
+	void operator += (const Vector2& Second);
+	void operator -= (const Vector2& Second);
 
 
 
-	Vector2 operator*(const float& Second) const;
-	Vector2 operator/(const float& Second) const;
+	Vector2 operator * (const float& Second) const;
+	Vector2 operator / (const float& Second) const;
 
-	void operator *=(const float& Second);
-	void operator /=(const float& Second);
+	void operator *= (const float& Second);
+	void operator /= (const float& Second);
 
 
-	Vector2 operator*(const Matrix2x2& Second) const;
+	Vector2 operator * (const Matrix2x2& Second) const;
 
-	void operator*=(const Matrix2x2& Second) ;
+	void operator *= (const Matrix2x2& Second) ;
 
 
 private:

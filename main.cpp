@@ -12,6 +12,7 @@
 #include "Scene.hpp"
 
 #include "Fade.hpp"
+#include "Audio.hpp"
 
 
 #include "Math.hpp"
@@ -35,7 +36,50 @@
 
 
 void GameAllReset();
+void GameReset();
 
+// クソ宣言
+
+	const int HeartCount = 20;
+	Vector2 HeartPosition[HeartCount] = { };
+	int HeartSize[HeartCount] = { };
+	int HeartLifeSpan[HeartCount] = { };
+
+	unsigned int pressFlame = 0;
+
+
+
+
+
+	int inputFlame = 0;
+	bool canInput = false;
+
+	int sceneFlame = 0;
+
+
+
+
+	Particle particleTest;
+	Particle particleCircle;
+
+
+
+
+
+	Player player[3] = { };
+
+
+
+	Boss boss;
+
+	int scoreFlameCount = 0;
+	int score = 0;
+
+
+
+	int gameFlame = 0;
+
+	bool isWave = 0;
 
 const char kWindowTitle[] = "LC1A_05_オヌキセイヤ";
 
@@ -48,18 +92,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// キー入力結果を受け取る箱
 
-	//DefaultNumberSet();
-	DefaultNumberTexture[0] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/0.png");
-	DefaultNumberTexture[1] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/1.png");
-	DefaultNumberTexture[2] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/2.png");
-	DefaultNumberTexture[3] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/3.png");
-	DefaultNumberTexture[4] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/4.png");
-	DefaultNumberTexture[5] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/5.png");
-	DefaultNumberTexture[6] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/6.png");
-	DefaultNumberTexture[7] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/7.png");
-	DefaultNumberTexture[8] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/8.png");
-	DefaultNumberTexture[9] = Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png");
 
+	ImportAudio();
+	ImportTexture();
+
+	//DefaultNumberSet();
 
 	const int HurtWithHeart = Novice::LoadTexture("./Resources/Texture/Title/HurtWithHeart.png");
 	const int HwHBG = Novice::LoadTexture("./Resources/Texture/Title/HwHBG.png");
@@ -69,51 +106,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int TitleHeartTexture = Novice::LoadTexture("./Resources/Texture/Title/titleHeart.png");
 
 
+
+
 	const int WhiteBG = Novice::LoadTexture("./Resources/Texture/Background/WhiteBG.png");
+
+	const int CoreTexture = Novice::LoadTexture("./Resources/Texture/Map/core.png");
+	const int CoreFlameTexture = Novice::LoadTexture("./Resources/Texture/Map/waku.png");
 
 
 	const int GameOver = Novice::LoadTexture("./Resources/Texture/Title/GameOver.png");
 
-	const int HeartCount = 20;
-	Vector2 HeartPosition[HeartCount] = { };
-	int HeartSize[HeartCount] = { };
-	int HeartLifeSpan[HeartCount] = { };
-
-	ImportTexture();
-
-	unsigned int pressFlame = 0;
-
-	for (int i = 0; i < EnemyMax; i++) {
-		enemy[i].Reset();
-	}
-
-
-	int inputFlame = 0;
-	bool canInput = false;
-
-	int sceneFlame = 0;
-
-
-	Player player[3] = { Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/love.png"), 152, 152, 0, 1),Player(Novice::LoadTexture("./Resources/Texture/Entity/Player/Idle/love.png"), 152, 152, 0, 1),Player(TestCircleTexture, 32, 32, 0, 1) };
-
-	for (int i = 0; i < playerCount; i++) {
-		player[i].Reset(i);
-	}
-
-	Particle particleTest;
-	Particle particleCircle;
-
-	/*const int DefaultNumberTexture[10]{
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/0.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/1.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/2.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/3.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/4.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/5.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/6.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/7.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/8.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png") };*/
 
 	Number scoreText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 	Number comboText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
@@ -121,36 +123,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Number killText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 	Number aliveText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
 	Number totalText(Novice::LoadTexture("./Resources/Texture/UI/Number/Default/Number.png"));
-	/*(
-		{
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/0.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/1.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/2.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/3.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/4.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/5.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/6.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/7.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/8.png"),
-		Novice::LoadTexture("./Resources/Texture/UI/Number/Default/9.png")
-		}
-	);*/
+
 	scoreText.color = 0x00000044;
 
-	Bullet::BulletReset();
 
+	const int mapTexture = Novice::LoadTexture("./Resources/Texture/Map/circle.png");
 
-
-	Boss boss;
-
-	int scoreFlameCount = 0;
-	int score = 0;
-
-	int mapTexture = Novice::LoadTexture("./Resources/Texture/Map/circle.png");
-
-	int gameFlame = 0;
-
-	bool isWave = 0;
+	GameAllReset();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -176,6 +155,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			canInput = false;
 
 			if (fadeClass.isFinish() && Scene::preScene == Scene::GameScene) {
+				Novice::StopAudio(OpeningBGM[Handle]);
+
+
 				Scene::nowScene = Scene::GameScene;
 			}
 
@@ -188,6 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::ResultScene:
 			if (fadeClass.isFinish() && Scene::preScene == Scene::TitleScene) {
 				Scene::nowScene = Scene::TitleScene;
+				GameAllReset();
 			}
 			break;
 		default:
@@ -200,6 +183,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		switch (Scene::nowScene)
 		{
 		case Scene::TitleScene:
+			if (!Novice::IsPlayingAudio(OpeningBGM[Handle]) || OpeningBGM[Handle] == -1) {
+				OpeningBGM[Handle] = Novice::PlayAudio(OpeningBGM[Sound], true, 0.01);
+			}
 			for (int i = 0; i < HeartCount; i++) {
 				if (HeartLifeSpan[i] <= 0) {
 					HeartLifeSpan[i] = GetRandom(60 * 1, 60 * 4);
@@ -216,6 +202,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fadeClass.FlameEnd();
 			}
 			if (fadeClass.isFinish() && Scene::preScene == Scene::TitleScene) {
+		//		Novice::StopAudio(OpeningBGM[Handle]);
 				fadeClass.FadeSetting(easeInExpo);
 				//	fadeClass.ResetStates(MiddleCentor, MiddleCentor, 0xFFFFFFFF);
 				fadeClass.FlameEnd();
@@ -255,7 +242,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fadeClass.FadeStart(MiddleCentor, MiddleCentor, 0xFFFFFF00, 60 * 1.5);
 			}
 
-			if (isKeyPress(DIK_O) && !fadeClass.isActive()) {
+			//if (isKeyPress(DIK_O) && !fadeClass.isActive()) {
+			if (coreHP <= 0 && !fadeClass.isActive()) {
 
 
 				Scene::preScene = Scene::ResultScene;
@@ -312,9 +300,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			flame++;
 			if (canInput) {
 				gameFlame++;
+				if (coreHP > 0) {
+					coreHP--;
+				}
 			}
+
 			particleTest.CheckDelete();
 			particleCircle.CheckDelete();
+
 			if (canInput) {
 				for (int i = 0; i < playerCount; i++) {
 					player[i].EntityMoveInput();
@@ -332,10 +325,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (enemy[i].isAlive && BallCollision(enemy[i].position, enemy[i].radius, MapCentor, 30)) {
 					particleTest.Spawn(enemy[i].position, 5, 0x00FF00FF);
 				}
-				enemy[i].Despawn();
+				if (enemy[i].isAlive) {
+					if (BallCollision(enemy[i].position, enemy[i].radius, MapCentor, 30)) {
+						Camera::Shake({ 20,20 }, 30);
+						coreHP -= 1200;
+						enemy[i].Reset();
+					}
+				}
 			}
 
-			
+
 
 
 			/*if (flame > 2000) {
@@ -353,26 +352,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else if (flame > 0) {
 				spawnFlame = GetRandom(120,150);
 			}*/
-			
+	
 
 			if (totalKill < 10 && totalKill >= 0) {
-				spawnFlame = GetRandom(150, 180);
+				spawnFlame = GetRandom(100, 130);
 			}
-			if (totalKill < 30 && totalKill >= 10) {
-				spawnFlame = GetRandom(100, 140);
+			if (totalKill < 20 && totalKill >= 10) {
+				spawnFlame = GetRandom(90, 110);
 			}
-			if (totalKill < 60 && totalKill >= 30) {
-				spawnFlame = GetRandom(50, 100);
+			if (totalKill < 35 && totalKill >= 20) {
+				spawnFlame = GetRandom(70, 90);
 			}
-			if (totalKill < 100 && totalKill >= 60) {
-				spawnFlame = GetRandom(30, 70);
+			if (totalKill < 50 && totalKill >= 35) {
+				spawnFlame = GetRandom(60, 70);
 			}
-			if (totalKill >= 100) {
-				spawnFlame = GetRandom(1, 40);
+			if (totalKill < 70 && totalKill >= 50) {
+				spawnFlame = GetRandom(50, 60);
+			}
+			if (totalKill < 100 && totalKill >= 70) {
+				spawnFlame = GetRandom(40, 50);
+			}
+			if (totalKill < 200 && totalKill >= 100) {
+				spawnFlame = GetRandom(20, 70);
+			}
+			if (totalKill < 300 && totalKill >= 200) {
+				spawnFlame = GetRandom(1, 60);
+			}if (totalKill >= 300) {
+				spawnFlame = GetRandom(1, 45);
 			}
 
+			
 
-			if (/*gameFlame % spawnFlame == 0*/ isKeyTrigger(DIK_A) && Scene::GameScene == Scene::nowScene) {
+
+
+			if (gameFlame % spawnFlame == 0 && gameFlame != 0/*isKeyTrigger(DIK_A)*/ && Scene::GameScene == Scene::nowScene) {
 				for (int i = 0; i < EnemyMax; i++) {
 					if (!enemy[i].isAlive) {
 						enemy[i].Spawn();
@@ -380,6 +393,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 			}
+
+			Novice::ScreenPrintf(100, 100, "totalKill %d", totalKill);
+			/*Novice::ScreenPrintf(100, 120, "waveCount %d", waveCount);*/
+			Novice::ScreenPrintf(100, 140, "spawnFlame %d", spawnFlame);
 
 			/*
 			if (isKeyTrigger(DIK_E)) {
@@ -451,21 +468,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Bullet::BulletUpdate();
 			Bullet::BulletDelete();
 
-			for (int i = 0; i < Bullet::BulletMaxCount; i++) {
-				for (int j = 0; j < EnemyMax; j++) {
-					if (BallCollision(Bullet::bullet[i].position, Bullet::bullet[i].radius, enemy[j].position, enemy[j].radius)) {
-						const int BulletKillText = 1;
-						comboText.NumberUpdate(BulletKillText);
-						comboText.color = BulletKillText < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)BulletKillText) / 10.0f) : ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)BulletKillText - 10) / 10.0f);
+			//for (int i = 0; i < Bullet::BulletMaxCount; i++) {
+			//	for (int j = 0; j < EnemyMax; j++) {
+			//		if (BallCollision(Bullet::bullet[i].position, Bullet::bullet[i].radius, enemy[j].position, enemy[j].radius)) {
+			//			const int BulletKillText = 1;
+			//			comboText.NumberUpdate(BulletKillText);
+			//			comboText.color = BulletKillText < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)BulletKillText) / 10.0f) : ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)BulletKillText - 10) / 10.0f);
 
-						//	Novice::DrawEllipse(0, 0, 10, 10, 0.0f, GREEN, kFillModeSolid);
-					}
+			//			//	Novice::DrawEllipse(0, 0, 10, 10, 0.0f, GREEN, kFillModeSolid);
+			//		}
+			//	}
+			//}
+			Bullet::BulletEnemyHit();
+
+			for (int i = 0; i < EnemyMax; i++) {
+				if (enemy[i].isAlive == true && enemy[i].speed <= 0) {
+					const int BulletKillText = 1;
+					comboText.NumberUpdate(BulletKillText);
+					comboText.color = BulletKillText < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)BulletKillText) / 10.0f) : ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)BulletKillText - 10) / 10.0f);
+					totalKill++;
+					particleTest.Spawn(enemy[i].position, 10, 0x000000FF);
+
+					enemy[i].Reset();
 				}
 			}
-			Bullet::BulletEnemyHit();
 			///*Bullet::BulletReset();*/
-
-
+			
 
 			if (gameFlame % 30 == 0) {
 
@@ -489,13 +517,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (player[0].velocity.Length() == 0 && killCount != 0) {
 				comboText.NumberUpdate(killCount);
-				comboText.color = killCount < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)killCount) / 10.0f): ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)killCount - 10) / 10.0f);
+				comboText.color = killCount < 10 ? ColorEasingMove(0xFFFFFFFF, 0xFFFF00FF, ((float)killCount) / 10.0f) : ColorEasingMove(0xFFFF00FF, 0xFF0000FF, ((float)killCount - 10) / 10.0f);
 
 				killScore += pow(2, killCount) - 1;
 				killCount = 0;
 			}
 
-			
+
 
 
 			score = scoreFlameCount + killScore;
@@ -508,7 +536,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			comboText.setDrawPosition(Number::Right);
 
 
-
+			coreHP = Clamp(coreHP, 0, MaxHP);
 
 			break;
 		case Scene::ResultScene:
@@ -570,11 +598,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//Novice::ScreenPrintf(10, 100, "%.3f", Length(Bullet::bullet[0].position, enemy[0].position) - (Bullet::bullet[0].radius + enemy[0].radius));
 
 		//	Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), MapRadius, MapRadius, 0.0f, 0xFFFFFFFF, kFillModeWireFrame);
-			DrawQuadFunction(MiddleCentor, { 700,700 }, 0, 0, 700, 700, mapTexture, 0xFFFFFFFF);
+			DrawQuadFunction(MapCentor, { 700,700 }, 0, 0, 700, 700, mapTexture, 0xFFFFFFFF);
 
-			Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), 64, 64, 0.0f, 0x00FF00FF, kFillModeSolid);
+			DrawQuadFunction(MapCentor, Vector2{ 64,64 } *(((float)coreHP / MaxHP) * 2), 0, 0, 240, 240, CoreTexture, 0xFFFFFFFF);
+			DrawQuadFunction(MapCentor, Vector2{ 64,64 } *2, 0, 0, 240, 240, CoreFlameTexture, 0xFFFFFFBB);
+			//	Novice::DrawEllipse(MiddleCentor.x + Camera::scroll.x, ToWorld(MiddleCentor.y + Camera::scroll.y), 64, 64, 0.0f, 0x00FF00FF, kFillModeSolid);
 
-			//	Novice::DrawEllipse(particleTest.particles[0].position.x, ToWorld(particleTest.particles[0].position.y), 100, 100, 0.0f, 0x00FF0077, kFillModeSolid);
+
+				//	Novice::DrawEllipse(particleTest.particles[0].position.x, ToWorld(particleTest.particles[0].position.y), 100, 100, 0.0f, 0x00FF0077, kFillModeSolid);
 
 
 			particleTest.Draw();
@@ -589,7 +620,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			
+
 
 			/*if (isWave) {
 				Novice::DrawEllipse(MapCentor,MapCentor,)
@@ -603,7 +634,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///*Novice::ScreenPrintf(100, 170, "bullet.y %f", );*/
 			//Novice::ScreenPrintf(100, 250, "velocity.x %f", player[0].velocity.x);
 			//Novice::ScreenPrintf(100, 270, "velocity.y %f", player[0].velocity.y);
-			
+
 			Novice::ScreenPrintf(100, 100, "totalKill %d", totalKill);
 			Novice::ScreenPrintf(100, 150, "isPlayerRelease %d", isPlayerRelease);
 			/*Novice::ScreenPrintf(100, 170, "bullet.y %f", );*/
@@ -648,6 +679,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 void GameAllReset() {
-	totalKill = 0;
+	GameReset();
+	for (int i = 0; i < HeartCount; i++) {
+		HeartPosition[i] = { };
+		HeartSize[i] = { };
+		HeartLifeSpan[i] = { };
+	}
 }
 
+void GameReset() {
+	totalKill = 0;
+
+	coreHP = MaxHP;
+
+	for (int i = 0; i < EnemyMax; i++) {
+		enemy[i].Reset();
+	}
+
+	for (int i = 0; i < playerCount; i++) {
+		player[i].Reset(i);
+	}
+
+	Bullet::BulletReset();
+	for (int i = 0; i < ParticleMax; i++) {
+		particleTest.Reset(i);
+		particleCircle.Reset(i);
+	}
+
+	pressFlame = 0;
+
+
+
+
+
+	inputFlame = 0;
+	canInput = false;
+
+	sceneFlame = 0;
+
+
+	scoreFlameCount = 0;
+	score = 0;
+
+
+
+	gameFlame = 0;
+
+	isWave = 0;
+}
